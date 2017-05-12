@@ -19,12 +19,12 @@ var UserModel = {
     },
     findByUsername: function (username, callback) {
 
-        return db.query("select UserId,ExternalId,UserName,password from Users where UserName = ?", [UserName], callback);
+        return db.query("select ExternalId,UserName,FirstName,LastName,invitation_status,user_status  from Users where UserName = ?", [UserName], callback);
     },
 
     findByExternalId: function (externalId, callback) {
 
-        return db.query("select UserId,ExternalId,UserName from Users where ExternalId=?", [externalId], callback);
+        return db.query("select ExternalId,UserName,FirstName,LastName,invitation_status,user_status from Users where ExternalId=?", [externalId], callback);
     }
 
 
