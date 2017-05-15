@@ -12,6 +12,8 @@ router.get('/:id?', function (req, res, next) {
     }
   });
 });
+
+// Add company 
 router.post('/', function (req, res, next) {
   Companies.addCompany(JSON.stringify(req.body), function (err, rows) {
     if (err) {

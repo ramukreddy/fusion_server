@@ -38,7 +38,7 @@ var CompanyModel = {
     addDepartmentToCompany: function (department, callback) {
 
         return db.query("insert into Department (CompanyID,DepartmentName) values ?",
-            [company.name, company.locationId, company.industryType], function (error, results, fields) {
+            [department.name, department.companyId], function (error, results) {
             if (error) {
                 callback(error, null);
 

@@ -4,13 +4,13 @@ var StudentCohortModel = {
     addStudentCohort: function (studentId, teacherId, projectId, callback) {
 
         var record = {
-            StudentId: studentId, TeacherId: teacherId, ProjectId: ProjectId,
-            CreatedBy: teacherId
+            StudentId: studentId, TeacherId: teacherId, ProjectId: projectId,
+            CreatedBy: teacherId,CohortStatus:'Active'
         };
 
         var query = db.query("select StudentId, TeacherId, ProjectId from StudentCohort where StudentId = ? " +
             "and TeacherId = ? and ProjectId = ? "
-            , [studentId, teacherId, ProjectId], function (error, results) {
+            , [studentId, teacherId, projectId], function (error, results) {
                 if (error) {
                     return callback(error, null);
                 }
@@ -22,6 +22,9 @@ var StudentCohortModel = {
                         callback(null,"success")
                     });
 
+
+                }else{
+                   return callback("Student is already added to project", null);
 
                 }
 

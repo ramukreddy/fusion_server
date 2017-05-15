@@ -5,30 +5,23 @@ var AddressModel = {
     findbyAddressId: function (addressId, callback) {
 
         return db.query("select addressId,Street1,Street2,City,State,PostalCode  from Address where addressId = ?", [addressId], function (error, results, fields) {
-                if (error) {
-                        throw error;
-                }
-                callback(results);
+            if (error) {
+                throw error;
+            }
+            callback(results);
         });
     },
 
     addAddress: function (address, callback) {
-
-        var query = db.query("insert into Address (Street1,Street2,City,State,PostalCode) values",
-            [address.street1, address.street2, address.city, address.state, address.postalcode], function (error, results, fields) {
+        //[address.street1, address.street2, address.city, address.state, address.postalcode]
+        var record = { Street1: address.street1, Street2: address.street2, City: address.city, State: address.state, PostalCode: address.postalcode };
+        var query = db.query("insert into Address Set ?",
+            record, function (error, results, fields) {
                 if (error) {
-                    return connection.rollback(function () {
-                        throw error;
-                    });
+                    return callback(error, null);
                 }
-                connection.commit(function (err) {
-                    if (err) {
-                        return connection.rollback(function () {
-                            throw err;
-                        });
-                    }
-                    callback(results.insertedid)
-                });
+
+                return callback(null,results.insertId)
             });
 
     }
