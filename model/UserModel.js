@@ -1,5 +1,6 @@
 var db = require('../config/dbconnection'); //reference of dbconnection.js
 var validator = require('validator');
+var tokenGenerator = require('./TokenGenerator');
 
 
 var UserModel = {
@@ -26,22 +27,31 @@ var UserModel = {
 
     findByUserId: function (externalId, callback) {
 
-        return db.query("select UserId ,UserName,FirstName,LastName,InvitationStatus,UserStatus,LastLoginDate from User  where UserId=?", [UserId], callback);
+        var query = db.query("select UserId ,UserName,FirstName,LastName,InvitationStatus,UserStatus,LastLoginDate from User  where UserId=?",
+            [UserId], function (error, results) {
+                if (error) {
+                   return callback(error, null);
+                }
+                callback(null,results);
+            });
     },
 
     inviteUserByEmailId: function (firstName, lastName, email, callback) {
 
         if (validator.isEmail(email)) {
-            var query = db.query("select UserName from User where UserName = ? ",[email], function (error, results, fields) {
+            var query = db.query("select UserName from User where UserName = ? ", [email], function (error, results, fields) {
                 if (error) {
                     callback(error, null);
                 }
                 console.log(results);
-                if (results.length > 0) {
+                if (results && results.length > 0) {
                     callback("User already exist", null);
                 } else {
-
-                    var record= { UserName: email, lastname: lastName, FirstName: firstName ,InvitationStatus:'Invited',UserStatus:'Active'};
+                    var token = "";
+                    tokenGenerator.createVerificationToken(function (cbtoken){
+                            token= cbtoken; 
+                    });
+                    var record = { UserName: email, lastname: lastName, FirstName: firstName,VerificationToken:token, InvitationStatus: 'Invited', UserStatus: 'Active' };
 
                     var insertQuery = db.query("insert into User  set ? ",
                         record, function (error, results) {

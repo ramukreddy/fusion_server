@@ -4,8 +4,8 @@ var CompanyModel = {
 
     findByCompanyId: function (companyId, callback) {
 
-        var query = db.query("select CompanyID,CompanyName,IndustryType.IndustryTypeName from Companies,IndustryType "+
-                            " where Companies.CompanyID = ? and Companies.IndustryTypeID = IndustryType.IndustryTypeId",
+        var query = db.query("select CompanyId,CompanyName,IndustryType.IndustryTypeName from Company,IndustryType "+
+                            " where Company.CompanyID = ? and Company.IndustryTypeID = IndustryType.IndustryTypeId",
             [companyId], function (error, results, fields) {
                 if (error) {
                     callback(error, null);
@@ -19,10 +19,12 @@ var CompanyModel = {
             });
     },
 
-    addCompany: function (company, callback) {
+    addCompany: function (name,locationId,industryType, callback) {
 
-        return db.query("insert into Companies (Name,LocationId,IndustryTypeId) values ?",
-            [company.name, company.locationId, company.industryType], function (error, results, fields) {
+        var record = { CompanyName: name, LocationId: locationId, IndustryTypeId: industryType};
+
+        return db.query("insert into Company set ?",
+            record, function (error, results, fields) {
             if (error) {
                 callback(error, null);
 
@@ -35,10 +37,10 @@ var CompanyModel = {
         });
     },
 
-    addDepartmentToCompany: function (department, callback) {
+    addDepartmentToCompany: function (name,companyId, callback) {
 
-        return db.query("insert into Department (CompanyID,DepartmentName) values ?",
-            [department.name, department.companyId], function (error, results) {
+        return db.query("insert into Department (CompanyId,DepartmentName) values ?",
+            [name, companyId], function (error, results) {
             if (error) {
                 callback(error, null);
 
