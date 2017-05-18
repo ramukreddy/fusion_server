@@ -20,46 +20,52 @@ var InstitutionModel = {
 
     addInstitution: function (institution, callback) {
 
-        return db.query("insert into Institutions (InstitutionName,AddressId) values",
-            [institution.name, institution.addressId], function (error, results, fields) {
-            if (error) {
-                callback(error, null);
+        var record = { InstitutionName: institution.name, AddressId: institution.addressId };
 
-            } else {
-                console.log("results ", [results]);
-                callback(null, results.insertId);
-            }
+        return db.query("insert into Institutions set ? ",
+            record, function (error, results, fields) {
+                if (error) {
+                    callback(error, null);
+
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results.insertId);
+                }
 
 
-        });
+            });
     },
 
-    addCollege: function (college, callback) {
+    addCollege: function (college, addressId, callback) {
+        var record = { CollegeName: college.name, InstitutionId: college.institutionId, AddressId: addressId };
 
-        return db.query("insert into College (CollegeName,InstitutionId,AddressId) values",
-            [college.name, college.institutionId, company.addressId], function (error, results, fields) {
-            if (error) {
-                callback(error, null);
+        return db.query("insert into College  set ? ",
+            record, function (error, results, fields) {
+                if (error) {
+                    callback(error, null);
 
-            } else {
-                console.log("results ", [results]);
-                callback(null, results.insertId);
-            }
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results.insertId);
+                }
 
 
-        });
+            });
     },
     addCollegeDepartment: function (collegeDepartment, callback) {
-        var query= db.query("insert into CollegeDepartment (DepartmentName,CollegeId) values",
-            [collegeDepartment.name, collegeDepartment.collegeId], function (error, results, fields) {
-            if (error) {
-                callback(error, null);
 
-            } else {
-                console.log("results ", [results]);
-                callback(null, results.insertId);
-            }
-        });
+        var record = { DepartmentName: collegeDepartment.name, CollegeId: collegeDepartment.collegeId };
+
+        var query = db.query("insert into CollegeDepartment (DepartmentName,CollegeId) values",
+            record, function (error, results, fields) {
+                if (error) {
+                    callback(error, null);
+
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results.insertId);
+                }
+            });
     },
 
 }

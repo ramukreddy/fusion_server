@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var conceptModel = require('../model/CenceptModel')
+var conceptModel = require('../model/ConceptModel')
 /* GET users listing. */
 router.get('/:id?', function (req, res, next) {
   conceptModel.findByConceptId(req.params.id, function (err, rows) {

@@ -21,31 +21,33 @@ router.post('/', function (req, res, next) {
   var companyJson = JSON.stringify(req.body);
   var companyObj = JSON.parse(companyJson);
 
-  var addressObj = companyObj.address;
-  if (addressObj) {
 
-    addAddress(addressObj, companyObj, addCompany, function (error, companyId) {
-      if (error) {
-        res.status(500);
-        res.json(error);
+  addAddress(companyObj, addCompany, function (error, companyId) {
+    if (error) {
+      res.status(500);
+      res.json(error);
 
-      } else {
-        res.status(200);
-        res.json("Company is just added " + companyId);
-      }
+    } else {
+      res.status(200);
+      res.json("Company is just added " + companyId);
+    }
 
-    });
-  }
-
+  });
 });
 
-function addAddress(addressObj, companyObj, next, callback) {
-  address.addAddress(addressObj, function (error, addressId) {
-    if (error) {
-      callback(error, null);
-    }
-    next(companyObj, addressId, callback)
-  });
+function addAddress(companyObj, next, callback) {
+  var addressObj = companyObj.address;
+  if (addressObj) {
+    address.addAddress(addressObj, function (error, addressId) {
+      if (error) {
+        callback(error, null);
+      }
+      next(companyObj, addressId, callback)
+    });
+  } else {
+    next(companyObj, null, callback)
+  }
+
 
 }
 function addCompany(companyObj, addressId, callback) {
@@ -64,13 +66,13 @@ function addCompany(companyObj, addressId, callback) {
 router.post('/department', function (req, res, next) {
 
   var departmentJson = JSON.stringify(req.body);
-  var departmentJson = JSON.parse(departmentJson);
-  companies.addDepartmentToCompany(departmentJson.name, departmentJson.companyId, function (err, rows) {
+  var departmentObj= JSON.parse(departmentJson);
+  companies.addDepartmentToCompany(departmentObj.name, departmentObj.companyId, function (err, rows) {
     if (err) {
       res.json(err);
     }
     else {
-      res.json("Successfully added, your company id is: " + rows);
+      res.json("Successfully added, your Department id is: " + rows);
     }
   });
 });

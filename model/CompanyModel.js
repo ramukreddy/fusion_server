@@ -4,8 +4,8 @@ var CompanyModel = {
 
     findByCompanyId: function (companyId, callback) {
 
-        var query = db.query("select CompanyId,CompanyName,IndustryType.IndustryTypeName from Company,IndustryType "+
-                            " where Company.CompanyID = ? and Company.IndustryTypeID = IndustryType.IndustryTypeId",
+        var query = db.query("select CompanyId,CompanyName,IndustryType.IndustryTypeName from Company,IndustryType " +
+            " where Company.CompanyID = ? and Company.IndustryTypeID = IndustryType.IndustryTypeId",
             [companyId], function (error, results, fields) {
                 if (error) {
                     callback(error, null);
@@ -19,38 +19,39 @@ var CompanyModel = {
             });
     },
 
-    addCompany: function (name,locationId,industryType, callback) {
+    addCompany: function (name, locationId, industryType, callback) {
 
-        var record = { CompanyName: name, LocationId: locationId, IndustryTypeId: industryType};
+        var record = { CompanyName: name, LocationId: locationId, IndustryTypeId: industryType };
 
         return db.query("insert into Company set ?",
             record, function (error, results, fields) {
-            if (error) {
-                callback(error, null);
+                if (error) {
+                    callback(error, null);
 
-            } else {
-                console.log("results ", [results]);
-                callback(null, results.insertId);
-            }
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results.insertId);
+                }
 
 
-        });
+            });
     },
 
-    addDepartmentToCompany: function (name,companyId, callback) {
+    addDepartmentToCompany: function (name, companyId, callback) {
+        var record = { CompanyId: companyId, DepartmentName: name };
 
-        return db.query("insert into Department (CompanyId,DepartmentName) values ?",
-            [name, companyId], function (error, results) {
-            if (error) {
-                callback(error, null);
+        return db.query("insert into Department set  ?",
+            record, function (error, results) {
+                if (error) {
+                    callback(error, null);
 
-            } else {
-                console.log("results ", [results]);
-                callback(null, results.insertId);
-            }
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results.insertId);
+                }
 
 
-        });
+            });
     },
 
 }
