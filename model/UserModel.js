@@ -30,15 +30,16 @@ var UserModel = {
         var query = db.query("select UserId ,UserName,FirstName,LastName,InvitationStatus,UserStatus,LastLoginDate from User  where UserId=?",
             [UserId], function (error, results) {
                 if (error) {
-                   return callback(error, null);
+                    return callback(error, null);
                 }
-                callback(null,results);
+                callback(null, results);
             });
     },
 
     inviteUserByEmailId: function (firstName, lastName, email, callback) {
 
         if (validator.isEmail(email)) {
+
             var query = db.query("select UserName from User where UserName = ? ", [email], function (error, results, fields) {
                 if (error) {
                     callback(error, null);
@@ -48,10 +49,10 @@ var UserModel = {
                     callback("User already exist", null);
                 } else {
                     var token = "";
-                    tokenGenerator.createVerificationToken(function (cbtoken){
-                            token= cbtoken; 
+                    tokenGenerator.createVerificationToken(function (cbtoken) {
+                        token = cbtoken;
                     });
-                    var record = { UserName: email, lastname: lastName, FirstName: firstName,VerificationToken:token, InvitationStatus: 'Invited', UserStatus: 'Active' };
+                    var record = { UserName: email, lastname: lastName, FirstName: firstName, VerificationToken: token, InvitationStatus: 'Invited', UserStatus: 'Active' };
 
                     var insertQuery = db.query("insert into User  set ? ",
                         record, function (error, results) {
@@ -77,7 +78,60 @@ var UserModel = {
 
         }
 
+    },
+
+    saveUser: function (userObject, callback) {
+
+
+        checkUserExist(userObject.email, function (errr, results) {
+
+            if (!results) {
+                var record = {
+                    UserName: userObject.email, lastname: userObject.lastName, FirstName: userObject.firstName,
+                    VerificationToken: token, InvitationStatus: 'Joined', UserStatus: 'Active'
+                };
+
+                var insertQuery = db.query("insert into User  set ? ",
+                    record, function (error, results) {
+                        console.log(insertQuery.sql);
+                        if (error) {
+                            console.log(error);
+                            callback(error, null);
+
+                        } else {
+                            console.log("results ", [results]);
+                            callback(null, results.insertId);
+                        }
+
+
+                    });
+            } else {
+                callback("Email alreayd registred with another account ", null);
+            }
+        });
+
+
+
+
+
+
     }
+
+
+},
+
+var checkUserExist = function (emailId, callback) {
+
+    var query = db.query("select UserName from User where UserName = ? ", [email], function (error, results, fields) {
+        if (error) {
+            callback(error, null);
+        }
+        console.log(results);
+        if (results && results.length > 0) {
+            callback(null, results);
+        }
+    });
+
 
 }
 module.exports = UserModel;

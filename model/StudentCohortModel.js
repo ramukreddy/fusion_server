@@ -5,7 +5,7 @@ var StudentCohortModel = {
 
         var record = {
             StudentId: studentId, TeacherId: teacherId, ProjectId: projectId,
-            CreatedBy: teacherId,CohortStatus:'Active'
+            CreatedBy: teacherId, CohortStatus: 'Active'
         };
 
         var query = db.query("select StudentId, TeacherId, ProjectId from StudentCohort where StudentId = ? " +
@@ -19,16 +19,47 @@ var StudentCohortModel = {
                         if (error) {
                             return callback(error, null);
                         }
-                        callback(null,"success")
+                        callback(null, "success")
                     });
 
 
-                }else{
-                   return callback("Student is already added to project", null);
+                } else {
+                    return callback("Student is already added to project", null);
 
                 }
 
             });
+    },
+
+    getAllStudentsForTeacher: function (teacherId, callback) {
+
+        var query = db.query("select user.FirstName,user.LastName,user.UserName as email,pj.ProjectName from User user,StudentCohort sc " +
+            "left outer join Project pj on pj.ProjectId= sc.ProjectID " +
+            " where sc.StudentId = user.UserId and sc.TeacherId = ? ",
+            [teacherId], function (error, results) {
+                if (error) {
+                    return callback(error, null);
+                } else {
+                    return callback(null, results);
+
+                }
+            });
+
+    },
+     getAllStudentsForProjectId: function (projectId, callback) {
+
+        var query = db.query("select user.FirstName,user.LastName,user.UserName as email,pj.ProjectName from User user,StudentCohort sc " +
+            "join Project pj on pj.ProjectId= sc.ProjectID " +
+            " where sc.StudentId = user.UserId and sc.projectId = ? ",
+            [projectId], function (error, results) {
+                if (error) {
+                    return callback(error, null);
+                } else {
+                    return callback(null, results);
+
+                }
+            });
+
     }
 }
 module.exports = StudentCohortModel;

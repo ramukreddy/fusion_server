@@ -44,5 +44,27 @@ router.post('/', function (req, res, next) {
 
 });
 
+router.get('/teacher/:id/students', function (req, res, next) {
+
+    if (id) {
+        studentCohortModel.getAllStudentsForTeacher(id, function (error, results) {
+            if (error) {
+                res.statusCode(500);
+                res.json(error);
+            } else {
+                res.statusCode(200);
+
+                res.json(restults);
+
+            }
+        });
+    } else {
+        res.sendStatus(200);
+
+    }
+
+
+
+});
 
 module.exports = router;

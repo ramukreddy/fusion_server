@@ -35,4 +35,28 @@ router.post('/inviteUserByEmail', function (req, res) {
 
   });
 });
+
+router.post('/', function (req, res) {
+  var userObj = JSON.parse(JSON.stringify(req.body));
+
+  User.saveUser(userObj, function (error, userId) {
+    if (error) {
+      res.status(500);
+      res.json({
+        "status": 500,
+        "message": error
+      });
+      return;
+    } else {
+      res.status(200);
+      res.json({
+        "status": 200,
+        "message": "User id : " + userId
+      });
+
+    }
+
+  });
+});
+
 module.exports = router;
