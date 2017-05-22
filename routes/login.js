@@ -13,7 +13,7 @@ router.post('/', function(req, res) {
       });
       return;
     }
-    auth.login(userObj.username,userObj.password, res);
+   auth.login(userObj.username,userObj.password, res);
 });
 
 

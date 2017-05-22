@@ -83,12 +83,16 @@ var UserModel = {
     saveUser: function (userObject, callback) {
 
 
-        checkUserExist(userObject.email, function (errr, results) {
+        checkUserExist(userObject.email, function (error, results) {
 
-            if (!results) {
+            if (!error && results.length <=0) {
                 var record = {
-                    UserName: userObject.email, lastname: userObject.lastName, FirstName: userObject.firstName,
-                    VerificationToken: token, InvitationStatus: 'Joined', UserStatus: 'Active'
+                    UserName: userObject.email, 
+                    UserPassword : userObject.password, 
+                    lastname: userObject.lastName, 
+                    FirstName: userObject.firstName,
+                    VerificationToken: userObject.token, 
+                    InvitationStatus: 'Joined', UserStatus: 'Active'
                 };
 
                 var insertQuery = db.query("insert into User  set ? ",
@@ -106,7 +110,7 @@ var UserModel = {
 
                     });
             } else {
-                callback("Email alreayd registred with another account ", null);
+                callback("Email already registred with another account ", null);
             }
         });
 
@@ -120,16 +124,16 @@ var UserModel = {
 
 },
 
-var checkUserExist = function (emailId, callback) {
+checkUserExist = function (emailId, callback) {
 
-    var query = db.query("select UserName from User where UserName = ? ", [email], function (error, results, fields) {
+    var query = db.query("select UserName from User where UserName = ? ", [emailId], function (error, results, fields) {
         if (error) {
             callback(error, null);
-        }
-        console.log(results);
-        if (results && results.length > 0) {
+        }else{
             callback(null, results);
+
         }
+       
     });
 
 
