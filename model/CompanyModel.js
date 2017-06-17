@@ -7,6 +7,7 @@ var CompanyModel = {
         var query = db.query("select CompanyId,CompanyName,IndustryType.IndustryTypeName from Company,IndustryType " +
             " where Company.CompanyID = ? and Company.IndustryTypeID = IndustryType.IndustryTypeId",
             [companyId], function (error, results, fields) {
+                console.log(query.sql);
                 if (error) {
                     callback(error, null);
 
