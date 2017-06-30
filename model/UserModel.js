@@ -36,6 +36,16 @@ var UserModel = {
             });
     },
 
+    findByInviteeToken: function (token, callback) {
+
+        var query = db.query("select UserId ,UserName,FirstName,LastName,InvitationStatus,UserStatus,LastLoginDate from User  where VerificationToken=?",
+            [token], function (error, results) {
+                if (error) {
+                    return callback(error, null);
+                }
+                callback(null, results);
+            });
+    },
     inviteUserByEmailId: function (firstName, lastName, email, callback) {
 
         if (validator.isEmail(email)) {
@@ -82,16 +92,15 @@ var UserModel = {
 
     saveUser: function (userObject, callback) {
 
-
         checkUserExist(userObject.email, function (error, results) {
 
-            if (!error && results.length <=0) {
+            if (!error && results.length <= 0) {
                 var record = {
-                    UserName: userObject.email, 
-                    UserPassword : userObject.password, 
-                    lastname: userObject.lastName, 
+                    UserName: userObject.email,
+                    UserPassword: userObject.password,
+                    lastname: userObject.lastName,
                     FirstName: userObject.firstName,
-                    VerificationToken: userObject.token, 
+                    VerificationToken: userObject.token,
                     InvitationStatus: 'Joined', UserStatus: 'Active'
                 };
 
@@ -106,34 +115,51 @@ var UserModel = {
                             console.log("results ", [results]);
                             callback(null, results.insertId);
                         }
-
-
                     });
             } else {
                 callback("Email already registred with another account ", null);
             }
         });
+    },
 
+    updateUser: function (userObject, callback) {
+        var record = {
 
+        };
 
+        var insertQuery = db.query("UPDATE User  set ?  where UserId = ?",
+            [
+                {
+                    UserPassword: userObject.password,
+                    Lastname: userObject.lastName,
+                    FirstName: userObject.firstName,
+                    InvitationStatus: 'Joined', UserStatus: 'Active'
+                }, 
+                  userObject.userId
+                ], function (error, results) {
+                    console.log(insertQuery.sql);
+                    if (error) {
+                        console.log(error);
+                        callback(error, null);
 
+                    } else {
+                        console.log("results ", [results]);
+                        callback(null, results.insertId);
+                    }
+                });
 
-
-    }
-
-
-},
-
+    },
+}
 checkUserExist = function (emailId, callback) {
 
     var query = db.query("select UserName from User where UserName = ? ", [emailId], function (error, results, fields) {
         if (error) {
             callback(error, null);
-        }else{
+        } else {
             callback(null, results);
 
         }
-       
+
     });
 
 
