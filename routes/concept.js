@@ -13,7 +13,7 @@ router.get('/:id?', function (req, res, next) {
   });
 });
 router.get('/user/:id?', function (req, res, next) {
-  conceptModel.getAllConcepts(function (err, rows) {
+  conceptModel.getAllConcepts(req.params.id,function (err, rows) {
     if (err) {
       res.json(err);
     }

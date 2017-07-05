@@ -62,7 +62,7 @@ var UserModel = {
                     tokenGenerator.createVerificationToken(function (cbtoken) {
                         token = cbtoken;
                     });
-                    var record = { UserName: email, lastname: lastName, FirstName: firstName, VerificationToken: token, InvitationStatus: 'Invited', UserStatus: 'Active' };
+                    var record = { UserName: email, LastName: lastName, FirstName: firstName, VerificationToken: token, InvitationStatus: 'Invited', UserStatus: 'Active' };
 
                     var insertQuery = db.query("insert into User  set ? ",
                         record, function (error, results) {
