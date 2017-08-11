@@ -18,7 +18,7 @@ var ConceptModel = {
             });
     },
 
-    getRegisteredConcept: function (userId, callback) {
+    getRegisteredConcepts: function (userId, callback) {
         var query = db.query(ConceptModelSQLConstants.getRegisteredConcepts,
             [userId], function (error, results, fields) {
                 if (error) {
@@ -32,9 +32,10 @@ var ConceptModel = {
 
     getAllConcepts: function (userId, callback) {
 
-        var query = db.query(ConceptModelSQLConstants.getAllConceptsSQL,userId,
+        var query = db.query(ConceptModelSQLConstants.getAllConceptsSQL, userId,
             function (error, results, fields) {
                 if (error) {
+                    console.log(error);
                     callback(error, null);
                 } else {
                     console.log("results ", [results]);
@@ -89,8 +90,39 @@ var ConceptModel = {
 
         });
 
-    }
+    },
 
+    getUniversitiesForRegisteredConcept: function (conceptId, callback) {
+        var options = {sql:ConceptModelSQLConstants.getUniversitiesForRegisteredConceptSQL, nestTables: true};
+
+        var query = db.query(options,
+            [conceptId], function (error, results, fields) {
+                if (error) {
+                    console.log(query);
+                    console.log(error);
+                    callback(error, null);
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results);
+                }
+            });
+    },
+
+    getProjectsForConceptAndCollege: function (conceptId, collegeId, callback) {
+        var options = {sql:ConceptModelSQLConstants.getProjectsForConceptAndCollege, nestTables: true};
+
+        var query = db.query(options,
+            [conceptId], [collegeId],function (error, results, fields) {
+                if (error) {
+                    console.log(query);
+                    console.log(error);
+                    callback(error, null);
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results);
+                }
+            });
+    }
 
 }
 module.exports = ConceptModel;

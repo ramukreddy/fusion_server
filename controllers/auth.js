@@ -26,11 +26,7 @@ var auth = {
   validate: function (username, password,callback) {
     var dbUserObj = users.validateUsernamePassword(username, password, function (err, data) {
       if (err) {
-        res.status(500);
-        res.json({
-          "status": 500,
-          "message": "Internal server error"
-        });
+       console.log(err);
         return;
       }
       console.log("rows == >" + data);

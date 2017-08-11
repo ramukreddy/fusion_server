@@ -22,11 +22,22 @@ router.get('/user/:id?', function (req, res, next) {
     }
   });
 });
+
+router.get('/:id/universities/', function (req, res, next) {
+  conceptModel.getUniversitiesForRegisteredConcept(req.params.id,function (err, rows) {
+    if (err) {
+      res.json(err);
+    }
+    else {
+      res.json(rows);
+    }
+  });
+});
 // get all registered concepts 
 
 router.get('/registered/user/:id?', function (req, res, next) {
 
-  conceptModel.getRegisteredConcept(req.params.id, function (err, rows) {
+  conceptModel.getRegisteredConcepts(req.params.id, function (err, rows) {
     if (err) {
       res.json(err);
     }

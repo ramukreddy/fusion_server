@@ -26,8 +26,8 @@ router.get('/user/:id?', function (req, res, next) {
 
 router.post('/', function (req, res) {
   var projectObj = JSON.parse(JSON.stringify(req.body));
- var  user = projectObj.user;
-  ProjectModel.addProject(projectObj, user,projectObj.projectUrl,projectObj.registerToConceptId,function (error, projectId) {
+  var user = projectObj.user;
+  ProjectModel.addProject(projectObj, user, projectObj.projectUrl, projectObj.registerToConceptId, function (error, projectId) {
     if (error) {
       res.status(500);
       res.json({
@@ -36,6 +36,7 @@ router.post('/', function (req, res) {
       });
       return;
     } else {
+      
       res.status(200);
       res.json({
         "status": 200,

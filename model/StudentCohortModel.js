@@ -40,7 +40,7 @@ var StudentCohortModel = {
 
     getAllStudentsForTeacher: function (teacherId, callback) {
 
-        var query = db.query("select user.FirstName,user.LastName,user.UserName as email,pj.ProjectTitle from User user,StudentCohort sc " +
+        var query = db.query("select user.UserId, user.FirstName,user.LastName,user.UserName as email,pj.ProjectTitle from User user,StudentCohort sc " +
             "left outer join Project pj on pj.ProjectId= sc.ProjectId " +
             " where sc.StudentId = user.UserId and sc.TeacherId = ? ",
             [teacherId], function (error, results) {
@@ -55,7 +55,7 @@ var StudentCohortModel = {
     },
     getAllStudentsForProjectId: function (projectId, callback) {
 
-        var query = db.query("select user.FirstName,user.LastName,user.UserName as email,pj.ProjectTitle from User user,StudentCohort sc " +
+        var query = db.query("select user.UserId, user.FirstName,user.LastName,user.UserName as email,pj.ProjectTitle from User user,StudentCohort sc " +
             "join Project pj on pj.ProjectId= sc.ProjectID " +
             " where sc.StudentId = user.UserId and sc.projectId = ? ",
             [projectId], function (error, results) {

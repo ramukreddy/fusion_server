@@ -1,5 +1,6 @@
 var db = require('../config/dbconnection'); //reference of dbconnection.js
 var ProjectModelSQLConstants = require('./ProjectModelSQLConstants'); //reference of dbconnection.js
+var studentCohortModel = require('./StudentCohortModel');
 
 var ProjectModel = {
 
@@ -37,9 +38,11 @@ var ProjectModel = {
     },
 
     addProject: function (project, user, projectUrl, registerToConceptId, callback) {
-        var record = { ProjectTitle: project.title, ProjectDescription: project.description, ProjectStartDate: project.startDate,
-         ProjectEndDate: project.endDate, ProjectStatus: project.projectStatus,ProjectURL:projectUrl,
-        RegisterToConceptId:registerToConceptId,CreatedBy:user.userId};
+        var record = {
+            ProjectTitle: project.title, ProjectDescription: project.description, ProjectStartDate: project.startDate,
+            ProjectEndDate: project.endDate, ProjectStatus: project.projectStatus, ProjectURL: projectUrl,
+            RegisterToConceptId: registerToConceptId, CreatedBy: user.userId
+        };
 
         var query = db.query("insert into Project set ? ",
             record,
@@ -51,6 +54,16 @@ var ProjectModel = {
                     callback(error, null);
 
                 } else {
+                    if (project.students) {
+                        for (var student of project.students) {
+                            studentCohortModel.addStudentCohort(student.UserId, user.userId, results.insertId, function (error, results) {
+                                if (error) {
+                                    console.log(query.sql)
+                                    console.log(error)
+                                }
+                            });
+                        }
+                    }
                     console.log("results ", [results]);
                     callback(null, results.insertId);
                 }

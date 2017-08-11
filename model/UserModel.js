@@ -7,7 +7,9 @@ var UserModel = {
 
     validateUsernamePassword: function (username, password, callback) {
 
-        var query = db.query("select UserId ,UserName,FirstName,LastName,InvitationStatus,UserStatus,LastLoginDate from User where UserName = ? AND UserPassword = ?", [username, password], function (error, results, fields) {
+        var query = db.query("select User.UserId ,UserName,Roles.RoleName,FirstName,LastName,InvitationStatus,UserStatus,LastLoginDate from User,UserRoles,Roles "+
+        " where  Roles.RoleId = UserRoles.RoleId and User.UserId = UserRoles.UserId and UserName = ? AND UserPassword = ? ", 
+        [username, password], function (error, results, fields) {
             if (error) {
                 callback(error, null);
 
@@ -22,12 +24,14 @@ var UserModel = {
     },
     findByUsername: function (username, callback) {
 
-        return db.query("select UserId ,UserName,FirstName,LastName,InvitationStatus,UserStatus,LastLoginDate from User  where UserName = ?", [UserName], callback);
+        return db.query("select User.UserId ,UserName, Roles.RoleName,LastName,InvitationStatus,UserStatus,LastLoginDate from User,UserRoles,Roles where UserName = ? " +
+            " and Roles.RoleId = UserRoles.RoleId and User.UserId = UserRoles.UserId", [UserName], callback);
     },
 
     findByUserId: function (externalId, callback) {
 
-        var query = db.query("select UserId ,UserName,FirstName,LastName,InvitationStatus,UserStatus,LastLoginDate from User  where UserId=?",
+        var query = db.query("select User.UserId ,UserName, Roles.RoleName,LastName,InvitationStatus,UserStatus,LastLoginDate from User,UserRoles,Roles where UserId = ? " +
+            "and Roles.RoleId = UserRoles.RoleId and User.UserId = UserRoles.UserId ",
             [UserId], function (error, results) {
                 if (error) {
                     return callback(error, null);
@@ -134,19 +138,19 @@ var UserModel = {
                     Lastname: userObject.lastName,
                     FirstName: userObject.firstName,
                     InvitationStatus: 'Joined', UserStatus: 'Active'
-                }, 
-                  userObject.userId
-                ], function (error, results) {
-                    console.log(insertQuery.sql);
-                    if (error) {
-                        console.log(error);
-                        callback(error, null);
+                },
+                userObject.userId
+            ], function (error, results) {
+                console.log(insertQuery.sql);
+                if (error) {
+                    console.log(error);
+                    callback(error, null);
 
-                    } else {
-                        console.log("results ", [results]);
-                        callback(null, results.insertId);
-                    }
-                });
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results.insertId);
+                }
+            });
 
     },
 }
