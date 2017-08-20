@@ -3,11 +3,18 @@ module.exports = {
     " ConceptToDate, ConceptOpenToInstitution, ConceptOpenToAnyLocation," +
     "ConceptStatus,ConceptMaxParticipants, CompanyId,ConceptCreatedBy " +
     "from Concept where ConceptId= ?",
-    getAllConceptsSQL: "select Concept.ConceptId, ConceptTitle,ConceptDescription,ConceptType,ConceptFromDate," +
+    getAllConceptsForUserSQL: "select distinct Concept.ConceptId, ConceptTitle,ConceptDescription,ConceptType,ConceptFromDate," +
     " ConceptToDate, ConceptOpenToInstitution, ConceptOpenToAnyLocation," +
     " ConceptStatus,ConceptMaxParticipants, CompanyId,ConceptCreatedBy " +
     " from Concept left outer join RegisterToConcept on Concept.ConceptId= RegisterToConcept.ConceptId" +
-    " where ConceptOpenToInstitution='1' ",
+    " where ConceptOpenToInstitution='1' and ConceptCreatedBy= ?",
+
+    getAllOpenConceptsForTeacherSQL: "select distinct Concept.ConceptId, ConceptTitle,ConceptDescription,ConceptType,ConceptFromDate," +
+    " ConceptToDate, ConceptOpenToInstitution, ConceptOpenToAnyLocation," +
+    " ConceptStatus,ConceptMaxParticipants, CompanyId,ConceptCreatedBy " +
+    " from Concept join RegisterToConcept on Concept.ConceptId!= RegisterToConcept.ConceptId" +
+    " where ConceptOpenToInstitution='1' and TeacherId = ?",
+
 
     getRegisteredConcepts: "select Concept.ConceptId, ConceptTitle,ConceptDescription,ConceptType,ConceptFromDate," +
     " ConceptToDate, ConceptOpenToInstitution, ConceptOpenToAnyLocation," +

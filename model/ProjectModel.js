@@ -1,6 +1,7 @@
 var db = require('../config/dbconnection'); //reference of dbconnection.js
 var ProjectModelSQLConstants = require('./ProjectModelSQLConstants'); //reference of dbconnection.js
 var studentCohortModel = require('./StudentCohortModel');
+var Promise = require('promise');
 
 var ProjectModel = {
 
@@ -21,8 +22,25 @@ var ProjectModel = {
     },
 
     findByProjectsByUserId: function (userId, callback) {
-
+        
         var query = db.query(ProjectModelSQLConstants.findByProjectsByUserIdSQL,
+            [userId], function (error, results, fields) {
+                if (error) {
+                    console.log(error);
+                    callback(error, null);
+
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results);
+                }
+
+
+            });
+    },
+
+    findByProjectsByStudentId: function (userId, callback) {
+        
+        var query = db.query(ProjectModelSQLConstants.findByProjectsByStudentIdSQL,
             [userId], function (error, results, fields) {
                 if (error) {
                     console.log(error);

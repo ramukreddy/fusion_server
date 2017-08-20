@@ -13,7 +13,8 @@ router.get('/:id?', function (req, res, next) {
   });
 });
 router.get('/user/:id?', function (req, res, next) {
-  conceptModel.getAllConcepts(req.params.id,function (err, rows) {
+  
+  conceptModel.getAllConceptsForUser(req.params.id,function (err, rows) {
     if (err) {
       res.json(err);
     }
@@ -25,6 +26,17 @@ router.get('/user/:id?', function (req, res, next) {
 
 router.get('/:id/universities/', function (req, res, next) {
   conceptModel.getUniversitiesForRegisteredConcept(req.params.id,function (err, rows) {
+    if (err) {
+      res.json(err);
+    }
+    else {
+      res.json(rows);
+    }
+  });
+});
+
+router.get('/:id/universities/:collegeId/projects', function (req, res, next) {
+  conceptModel.getProjectsForConceptAndCollege(req.params.id,req.params.collegeId,function (err, rows) {
     if (err) {
       res.json(err);
     }

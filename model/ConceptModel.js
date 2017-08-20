@@ -30,9 +30,23 @@ var ConceptModel = {
             });
     },
 
-    getAllConcepts: function (userId, callback) {
+    getAllConceptsForUser: function (userId, callback) {
 
-        var query = db.query(ConceptModelSQLConstants.getAllConceptsSQL, userId,
+        var query = db.query(ConceptModelSQLConstants.getAllConceptsForUserSQL, userId,
+            function (error, results, fields) {
+                if (error) {
+                    console.log(error);
+                    callback(error, null);
+                } else {
+                    console.log("results ", [results]);
+                    callback(null, results);
+                }
+            });
+    },
+
+     getAllOpenConceptsForTeacher: function (teacherId, callback) {
+
+        var query = db.query(ConceptModelSQLConstants.getAllOpenConceptsForTeacherSQL, teacherId,
             function (error, results, fields) {
                 if (error) {
                     console.log(error);

@@ -1,4 +1,6 @@
 var db = require('../config/dbconnection'); //reference of dbconnection.js
+var Promise = require('promise');
+
 var StudentCohortModel = {
     // this is expecting json object with multiple students,teacher id and project if they are assigned
     addStudentCohort: function (studentId, teacherId, projectId, callback) {
@@ -53,19 +55,22 @@ var StudentCohortModel = {
             });
 
     },
-    getAllStudentsForProjectId: function (projectId, callback) {
+    getAllStudentsForProjectId: function (projectId) {
+       return new Promise(function (resolve,reject){
 
         var query = db.query("select user.UserId, user.FirstName,user.LastName,user.UserName as email,pj.ProjectTitle from User user,StudentCohort sc " +
             "join Project pj on pj.ProjectId= sc.ProjectID " +
             " where sc.StudentId = user.UserId and sc.projectId = ? ",
             [projectId], function (error, results) {
                 if (error) {
-                    return callback(error, null);
+                    return reject(error);
                 } else {
-                    return callback(null, results);
+                    return resolve(results);
 
                 }
             });
+       }) ;
+        
 
     },
 
